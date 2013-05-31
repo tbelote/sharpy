@@ -58,7 +58,7 @@ class CheddarProduct(object):
                         cc_last_name=None, cc_email=None, cc_company=None, \
                         cc_country=None, cc_address=None, cc_city=None, \
                         cc_state=None, cc_zip=None, return_url=None, \
-                        cancel_url=None, charges=None, items=None):
+                        cancel_url=None, charges=None, items=None, apple_receipt=None):
 
         data = self.build_customer_post_data(code, first_name, last_name, \
                     email, plan_code, company, is_vat_exempt, vat_number, \
@@ -67,7 +67,7 @@ class CheddarProduct(object):
                     campaign_content, meta_data, initial_bill_date, method, \
                     cc_number, cc_expiration, cc_card_code, cc_first_name, \
                     cc_last_name, cc_email, cc_company, cc_country, cc_address, \
-                    cc_city, cc_state, cc_zip, return_url, cancel_url)
+                    cc_city, cc_state, cc_zip, return_url, cancel_url, apple_receipt=apple_receipt)
         
         if charges:
             for i, charge in enumerate(charges):
@@ -101,7 +101,7 @@ class CheddarProduct(object):
                 cc_last_name=None, cc_email=None, cc_company=None, \
                 cc_country=None, cc_address=None, cc_city=None, \
                 cc_state=None, cc_zip=None, return_url=None, cancel_url=None, \
-                bill_date=None):
+                bill_date=None,apple_receipt=None):
 
         data = {}
         
@@ -208,6 +208,8 @@ class CheddarProduct(object):
         
         if bill_date:
             data['subscription[changeBillDate]'] = self.client.format_datetime(bill_date)
+        if apple_receipt:
+            data['subscription[appleReceipt]'] = apple_receipt
 
         return data
         
@@ -414,6 +416,7 @@ class Customer(object):
         if meta_data:
           for datum in meta_data:
               self.meta_data[datum['name']] = datum['value']
+
         self.subscriptions = []
         self.invoices = []
         for subscription_data in subscriptions:
@@ -449,7 +452,7 @@ class Customer(object):
                 cc_last_name=None, cc_company=None, cc_email=None,\
                 cc_country=None, cc_address=None, cc_city=None, \
                 cc_state=None, cc_zip=None, plan_code=None, bill_date=None,
-                return_url=None, cancel_url=None,):
+                return_url=None, cancel_url=None, apple_receipt=None):
         
         data = self.product.build_customer_post_data( first_name=first_name,
                         last_name=last_name, email=email, plan_code=plan_code,
@@ -468,7 +471,7 @@ class Customer(object):
                         cc_email=cc_email, cc_country=cc_country,
                         cc_address=cc_address, cc_city=cc_city,
                         cc_state=cc_state, cc_zip=cc_zip, bill_date=bill_date,
-                        return_url=return_url, cancel_url=cancel_url,)
+                        return_url=return_url, cancel_url=cancel_url, apple_receipt=apple_receipt)
         
         path = 'customers/edit'
         params = {'code': self.code}
