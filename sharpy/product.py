@@ -414,6 +414,16 @@ class Customer(object):
         if meta_data:
           for datum in meta_data:
               self.meta_data[datum['name']] = datum['value']
+        self.subscriptions = []
+        self.invoices = []
+        for subscription_data in subscriptions:
+            subscription_data['customer'] = self
+            sub = Subscription(**subscription_data)
+            self.subscriptions.append(sub)
+            for invoice in sub.invoices:
+                i = invoice.copy()
+                i['plan'] = sub.plan
+                self.invoices.append(i)
         subscription_data = subscriptions[0]
         subscription_data['customer'] = self
         if hasattr(self, 'subscription'):
